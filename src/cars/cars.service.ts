@@ -1,6 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { Car } from './interfaces/car.interface';
 import {v4 as uuid} from 'uuid';
+import { CreateCarDto } from './dto/create-car.dto';
+import { error } from 'console';
 
 @Injectable()
 export class CarsService {
@@ -56,6 +58,27 @@ export class CarsService {
       throw new  NotFoundException(`Car with id: ${id} not found`);
     }
 
+    return car;
+  }
+
+  public create(createCarDto:CreateCarDto){
+    const self = this;
+    const car:Car  = {
+      id: uuid(),
+      brand: createCarDto.brand,
+      model: createCarDto.model,
+      color: createCarDto.color,
+      vin: createCarDto.vin,
+    };  
+
+    this.cars.forEach(element => {
+        if(element.vin === createCarDto.vin){
+          throw new  HttpException(`Car with VIN: ${createCarDto.vin} alredy exsist`,500);
+        }      
+    });
+
+    self.cars.push(car);
+    
     return car;
   }
 }
