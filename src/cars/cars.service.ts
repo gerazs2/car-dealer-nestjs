@@ -44,21 +44,17 @@ export class CarsService {
     },
   ];
 
-  public findAll() {
+  public delete(id:string){
     const self = this;
-    return self.cars;
-  }
+    
+    const car = self.findOneById(id);
 
-  public findOneById(id: string) {
-    const self = this;
-    const car = self.cars.find((car) => car.id === id);
-    console.log(car);
+    self.cars = self.cars.filter(car => car.id !== id);
+    // self.cars = self.cars.map(car => {
+    //   if (car.id === id){
 
-    if (!car) {
-      throw new NotFoundException(`Car with id: ${id} not found`);
-    }
-
-    return car;
+    //   }
+    // });
   }
 
   public update(id: string, updateCarDto: UpdateCarDto) {
@@ -107,6 +103,24 @@ export class CarsService {
     });
 
     self.cars.push(car);
+
+    return car;
+  }
+
+  
+  public findAll() {
+    const self = this;
+    return self.cars;
+  }
+
+  public findOneById(id: string) {
+    const self = this;
+    const car = self.cars.find((car) => car.id === id);
+    console.log(car);
+
+    if (!car) {
+      throw new NotFoundException(`Car with id: ${id} not found`);
+    }
 
     return car;
   }
